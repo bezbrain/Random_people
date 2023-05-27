@@ -9,16 +9,7 @@ const Card = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [iconStyle, setIconStyle] = useState(null);
   const contentRef = useRef(null);
-  const iconRef = useRef(null);
-
-  let displayDetails = [
-    // people[currentNumber].profile.firstName,
-    // people[currentNumber].email,
-    // people[currentNumber].profile.gender,
-    // people[currentNumber].profile.address,
-    // people[currentNumber].profile.phoneNumber,
-    // people[currentNumber].socials.facebook,
-  ];
+  const statementRef = useRef(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -28,14 +19,6 @@ const Card = () => {
           "https://6270020422c706a0ae70b72c.mockapi.io/lendsqr/api/v1/users"
         );
         setPeople(data);
-        // displayDetails = [
-        //   people[currentNumber].profile.firstName,
-        //   people[currentNumber].email,
-        //   people[currentNumber].profile.gender,
-        //   people[currentNumber].profile.address,
-        //   people[currentNumber].profile.phoneNumber,
-        //   people[currentNumber].socials.facebook,
-        // ];
         setIsLoading(true);
       } catch (error) {
         console.log(error);
@@ -44,6 +27,7 @@ const Card = () => {
     getData();
   }, []);
 
+  let getContent;
   const handleClick = () => {
     const getData = async () => {
       setIsLoading(false);
@@ -56,6 +40,8 @@ const Card = () => {
           return Math.floor(Math.random() * data.length);
         };
         currentNumber = randomNum();
+        getContent = statementRef.current;
+        getContent.textContent = "My name is:";
         setIsLoading(true);
       } catch (error) {
         console.log(error);
@@ -67,24 +53,30 @@ const Card = () => {
 
   const handleHover = (index) => {
     setIconStyle(iconStyle === index ? null : index);
-    let getContent = contentRef.current;
+    getContent = contentRef.current;
+    let getStatemenet = statementRef.current;
 
     icons.forEach((each) => {
-      const { id, iconName, icon } = each;
+      const { id, iconName, icon, statement } = each;
       if (id === index) {
-        console.log(iconName);
         if (iconName === "user") {
           getContent.textContent = people[currentNumber].profile.firstName;
+          getStatemenet.textContent = statement;
         } else if (iconName === "email") {
           getContent.textContent = people[currentNumber].email;
+          getStatemenet.textContent = statement;
         } else if (iconName === "gender") {
           getContent.textContent = people[currentNumber].profile.gender;
+          getStatemenet.textContent = statement;
         } else if (iconName === "address") {
           getContent.textContent = people[currentNumber].profile.address;
+          getStatemenet.textContent = statement;
         } else if (iconName === "phone") {
           getContent.textContent = people[currentNumber].profile.phoneNumber;
+          getStatemenet.textContent = statement;
         } else {
           getContent.textContent = people[currentNumber].socials.facebook;
+          getStatemenet.textContent = statement;
         }
       }
     });
@@ -102,7 +94,7 @@ const Card = () => {
           )}
         </div>
         <div className="bottom-card">
-          <h3>Each person details:</h3>
+          <h3 ref={statementRef}>My name is:</h3>
           <h1 ref={contentRef}>
             {isLoading ? people[currentNumber].profile.firstName : "Loading..."}
           </h1>
@@ -116,7 +108,6 @@ const Card = () => {
                   key={id}
                   onMouseOver={() => handleHover(id)}
                   onMouseOut={() => setIconStyle(null)}
-                  ref={iconRef}
                 >
                   {icon}
                 </div>
